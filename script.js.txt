@@ -1,0 +1,56 @@
+let bookings = [];
+
+function submitBooking() {
+    let room = document.getElementById("room-select").value;
+    let startTime = document.getElementById("start-time").value;
+    let duration = parseInt(document.getElementById("duration").value);
+    let applicantType = document.getElementById("applicant-type").value;
+    let contactName = document.getElementById("contact-name").value;
+    let contactEmail = document.getElementById("contact-email").value;
+
+    let start = new Date(startTime);
+    let end = new Date(start.getTime() + duration * 60 * 60 * 1000);
+
+    let booking = {
+        room: room,
+        startTime: start.toLocaleString(),
+        endTime: end.toLocaleString(),
+        applicantType: applicantType,
+        contactName: contactName,
+        contactEmail: contactEmail
+    };
+
+    bookings.push(booking);
+    updateBookingStatus();
+
+    document.getElementById("room-select").value = "";
+    document.getElementById("start-time").value = "";
+    document.getElementById("duration").value = "";
+    document.getElementById("applicant-type").value = "";
+    document.getElementById("contact-name").value = "";
+    document.getElementById("contact-email").value = "";
+}
+
+function updateBookingStatus() {
+    let tableBody = document.getElementById("booking-rows");
+    tableBody.innerHTML = "";
+
+    bookings.forEach((booking, index) => {
+        let row = tableBody.insertRow();
+        row.innerHTML = `
+            <td>${booking.room}</td>
+            <td>${booking.startTime}</td>
+            <td>${booking.endTime}</td>
+            <td>${booking.applicantType}</td>
+            <td>${booking.contactName}</td>
+            <td><button onclick="cancelBooking(${index})">Cancel</button></td>
+        `;
+    });
+}
+
+function cancelBooking(index) {
+    bookings.splice(index, 1);
+    updateBookingStatus();
+}
+
+window.onload = updateBookingStatus;
